@@ -8,7 +8,7 @@ public class APIHelperTests
     [Test]
     public async Task SearchMovie_ValidQuery_ReturnsResults()
     {
-        // Arrang
+        // Arrange
         PlayerPrefs.SetString("apiKey", "666d00beb8a3dc5d87ddf5259ab016b0"); // Configura la API Key
         string query = "Inception";
 
