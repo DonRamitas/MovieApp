@@ -1,50 +1,58 @@
-name: Unity CI/CD
+name: Actions 😎
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+on: [push, pull_request]
 
 jobs:
   build:
+    name: Build my project ✨
     runs-on: ubuntu-latest
     steps:
+      # Checkout
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          lfs: true
 
-      - name: Cache Library
-        uses: actions/cache@v3
+      # Cache
+      - uses: actions/cache@v3
         with:
           path: Library
-          key: Library-${{ runner.os }}-${{ github.sha }}
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
-            Library-${{ runner.os }}-
+            Library-
 
-      - name: Setup Unity
-        uses: game-ci/unity-builder@v2
+      # Run Tests
+      - name: Run Playmode & Editmode Tests 🧪
+        uses: game-ci/unity-test-runner@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          testMode: all # Ejecuta pruebas de Playmode y Editmode
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      # Upload Test Results
+      - name: Upload Test Results 📂
+        uses: actions/upload-artifact@v4
+        with:
+          name: Test-Results
+          path: artifacts/test-results
+
+      # Build APK
+      - name: Build Android APK 📱
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           unityVersion: 2022.3.24f1
           targetPlatform: Android
 
-      - name: Run Unit Tests
-        id: test
-        run: |
-          ./Unity -runTests -testPlatform playmode -logFile test-results.log || true
-
-      - name: Upload Test Results
+      # Upload APK
+      - name: Upload Android Build 📤
         uses: actions/upload-artifact@v4
         with:
-          name: Test Results
-          path: test-results.log
-
-      - name: Build APK
-        run: ./Unity -buildTarget Android -executeMethod BuildScript.Build
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: FastTV.apk
-          path: Builds/FastTV.apk
+          name: Android-Build
+          path: build
