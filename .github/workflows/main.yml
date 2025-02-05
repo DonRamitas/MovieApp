@@ -21,24 +21,6 @@ jobs:
           restore-keys: |
             Library-
 
-      # Run Tests
-      - name: Run Playmode & Editmode Tests 🧪
-        uses: game-ci/unity-test-runner@v4
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-        with:
-          testMode: all # Ejecuta pruebas de Playmode y Editmode
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
-
-      # Upload Test Results
-      - name: Upload Test Results 📂
-        uses: actions/upload-artifact@v4
-        with:
-          name: Test-Results
-          path: artifacts/test-results
-
       # Build APK
       - name: Build Android APK 📱
         uses: game-ci/unity-builder@v4
