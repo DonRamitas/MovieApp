@@ -1,6 +1,6 @@
 Movie Search App by Axel Neumann
 
-Download APK: https://drive.google.com/file/d/1IdivupPWkcF_fAOKnFpkvI00FINJTc59/view?usp=sharing
+Download APK (CI/CD): https://github.com/DonRamitas/MovieApp/actions/runs/13152927875/artifacts/2539314880
 
 Setup Instructions:
 - Clone this repository to your local machine
